@@ -13,27 +13,37 @@
 namespace liulin_y_complex_ccs {
 
 namespace {
-  
+
 constexpr double kEpsilon = 1e-10;
 
-bool IsValidCCS(const CCSMatrix& mat) {
-  if (mat.count_rows <= 0 || mat.count_cols <= 0) return false;
-  if (mat.col_index.size() != static_cast<size_t>(mat.count_cols) + 1) return false;
-  if (mat.col_index[0] != 0) return false;
-  if (mat.values.size() != mat.row_index.size()) return false;
-  if (mat.col_index.back() != static_cast<int>(mat.values.size())) return false;
+bool IsValidCCS(const CCSMatrix &mat) {
+  if (mat.count_rows <= 0 || mat.count_cols <= 0) {
+    return false;
+  }
+  if (mat.col_index.size() != static_cast<size_t>(mat.count_cols) + 1) {
+    return false;
+  }
+  if (mat.col_index[0] != 0) {
+    return false;
+  }
+  if (mat.values.size() != mat.row_index.size()) {
+    return false;
+  }
+  if (mat.col_index.back() != static_cast<int>(mat.values.size())) {
+    return false;
+  }
   return true;
 }
 }  // namespace
 
-LiulinYComplexCcsTbb::LiulinYComplexCcsTbb(const InType& in) : BaseTask() {
+LiulinYComplexCcsTbb::LiulinYComplexCcsTbb(const InType &in) : BaseTask() {
   SetTypeOfTask(GetStaticTypeOfTask());
   GetInput() = in;
 }
 
 bool LiulinYComplexCcsTbb::ValidationImpl() {
-  const auto& mat_a = GetInput().first;
-  const auto& mat_b = GetInput().second;
+  const auto &mat_a = GetInput().first;
+  const auto &mat_b = GetInput().second;
 
   if (!IsValidCCS(mat_a) || !IsValidCCS(mat_b)) {
     return false;
@@ -50,9 +60,9 @@ bool LiulinYComplexCcsTbb::PreProcessingImpl() {
 }
 
 bool LiulinYComplexCcsTbb::RunImpl() {
-  const auto& mat_a = GetInput().first;
-  const auto& mat_b = GetInput().second;
-  auto& mat_res = GetOutput();
+  const auto &mat_a = GetInput().first;
+  const auto &mat_b = GetInput().second;
+  auto &mat_res = GetOutput();
 
   const int res_rows = mat_a.count_rows;
   const int res_cols = mat_b.count_cols;
@@ -87,18 +97,22 @@ bool LiulinYComplexCcsTbb::RunImpl() {
   std::atomic<bool> success{true};
 
   try {
-    tbb::parallel_for(tbb::blocked_range<int>(0, res_cols), [&](const tbb::blocked_range<int>& r) {
+    tbb::parallel_for(tbb::blocked_range<int>(0, res_cols), [&](const tbb::blocked_range<int> &r) {
       for (int j = r.begin(); j != r.end(); ++j) {
         const int b_start = mat_b.col_index[static_cast<size_t>(j)];
         const int b_end = mat_b.col_index[static_cast<size_t>(j) + 1];
 
-        if (b_start == b_end) continue;
+        if (b_start == b_end) {
+          continue;
+        }
 
         for (int i = 0; i < res_rows; ++i) {
           const int a_start = mat_at.col_index[static_cast<size_t>(i)];
           const int a_end = mat_at.col_index[static_cast<size_t>(i) + 1];
 
-          if (a_start == a_end) continue;
+          if (a_start == a_end) {
+            continue;
+          }
 
           int ptr_a = a_start;
           int ptr_b = b_start;
@@ -127,7 +141,7 @@ bool LiulinYComplexCcsTbb::RunImpl() {
       }
     });
   } catch (...) {
-    success = false;  
+    success = false;
   }
 
   if (!success) {
@@ -153,7 +167,7 @@ bool LiulinYComplexCcsTbb::RunImpl() {
 }
 
 bool LiulinYComplexCcsTbb::PostProcessingImpl() {
-  const auto& mat_res = GetOutput();
+  const auto &mat_res = GetOutput();
   if (mat_res.count_rows <= 0 || mat_res.count_cols <= 0) {
     return false;
   }
