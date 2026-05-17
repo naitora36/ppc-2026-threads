@@ -11,6 +11,7 @@
 #include <tuple>
 #include <vector>
 
+#include "liulin_y_complex_ccs/all/include/ops_all.hpp"
 #include "liulin_y_complex_ccs/common/include/common.hpp"
 #include "liulin_y_complex_ccs/omp/include/ops_omp.hpp"
 #include "liulin_y_complex_ccs/seq/include/ops_seq.hpp"
@@ -171,8 +172,10 @@ const auto kTestTasksListSeq =
     ppc::util::AddFuncTask<LiulinYComplexCcs, InType>(kTestParam, PPC_SETTINGS_liulin_y_complex_ccs);
 const auto kTestTasksListOmp =
     ppc::util::AddFuncTask<LiulinYComplexCcsOmp, InType>(kTestParam, PPC_SETTINGS_liulin_y_complex_ccs);
+const auto kTestTasksListAll =
+    ppc::util::AddFuncTask<LiulinYComplexCcsAll, InType>(kTestParam, PPC_SETTINGS_liulin_y_complex_ccs);
 
-const auto kTestTasksList = std::tuple_cat(kTestTasksListSeq, kTestTasksListOmp);
+const auto kTestTasksList = std::tuple_cat(kTestTasksListSeq, kTestTasksListOmp, kTestTasksListAll);
 
 const auto kGtestValues = ppc::util::ExpandToValues(kTestTasksList);
 const auto kFuncTestName = LiulinYComplexCcsFuncTestsFromFile::PrintFuncTestName<LiulinYComplexCcsFuncTestsFromFile>;
