@@ -10,7 +10,7 @@
 
 namespace liulin_y_complex_ccs {
 
-class LiulinYComplexCcsAll : public ppc::task::Task<InType, OutType> {
+class LiulinYComplexCcsAll : public BaseTask {
  public:
   static constexpr ppc::task::TypeOfTask GetStaticTypeOfTask() {
     return ppc::task::TypeOfTask::kALL;
