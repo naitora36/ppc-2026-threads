@@ -2,9 +2,6 @@
 
 #include <mpi.h>
 
-#include <complex>
-#include <vector>
-
 #include "liulin_y_complex_ccs/common/include/common.hpp"
 #include "task/include/task.hpp"
 
@@ -21,10 +18,6 @@ class LiulinYComplexCcsAll : public BaseTask {
   bool PreProcessingImpl() override;
   bool RunImpl() override;
   bool PostProcessingImpl() override;
-
- private:
-  void BroadcastMatrix(CCSMatrix &mat, int root, MPI_Comm comm);
-  void Transpose(const CCSMatrix &in, CCSMatrix &out);
 };
 
 }  // namespace liulin_y_complex_ccs
